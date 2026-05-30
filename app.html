@@ -756,6 +756,68 @@ a.step:hover {
 }
 
 </style>
+<!-- Supabase Auth -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://eevbyktubxtokjnigulw.supabase.co';
+// ANON KEY — safe to expose in client (protected by RLS)
+// Replace this with your actual anon public key from Supabase dashboard → API Keys
+const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVldmJ5a3R1Ynh0b2tqbmlndWx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNTEzNzAsImV4cCI6MjA5NTcyNzM3MH0.cZ8_WEqlxAo-pcYRZNyLWSia_c6edXhepEM7V0OrbHA;
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Check if already logged in via Supabase on page load
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (session) {
+    // Store user info
+    window._sbUser = session.user;
+    // If access code gate is showing, skip straight to app
+    const gate = document.getElementById('apiGate');
+    if (gate && gate.style.display !== 'none') {
+      // Still need access code in localStorage for function calls
+      // If they signed in with Google but no access code, show a message
+      const ac = localStorage.getItem('_ac');
+      if (ac) {
+        showApp();
+      } else {
+        // Show logged-in state on gate — they need an access code too for now
+        const emailEl = document.getElementById('googleUserEmail');
+        if (emailEl) emailEl.textContent = session.user.email;
+        const googleStatus = document.getElementById('googleSignedInStatus');
+        if (googleStatus) googleStatus.style.display = 'block';
+      }
+    }
+  }
+
+  // Handle OAuth redirect (Supabase puts tokens in URL hash)
+  _sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      window._sbUser = session.user;
+      const emailEl = document.getElementById('googleUserEmail');
+      if (emailEl) emailEl.textContent = session.user.email;
+      const googleStatus = document.getElementById('googleSignedInStatus');
+      if (googleStatus) googleStatus.style.display = 'block';
+      // Auto-proceed if access code already saved
+      const ac = localStorage.getItem('_ac');
+      if (ac) showApp();
+    }
+  });
+});
+
+async function signInWithGoogle() {
+  await _sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+}
+
+async function signOutGoogle() {
+  await _sb.auth.signOut();
+  window._sbUser = null;
+  const googleStatus = document.getElementById('googleSignedInStatus');
+  if (googleStatus) googleStatus.style.display = 'none';
+}
+</script>
 <body>
 <div class="bg-mesh"></div>
 
@@ -918,6 +980,25 @@ a.step:hover {
         <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Early Access</div>
         <div style="font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;">Get started</div>
         <div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:28px;">Enter your access code to access Meeteligence.</div>
+        <!-- Google Sign In -->
+        <button onclick="signInWithGoogle()" style="width:100%;padding:12px;background:#fff;border:none;border-radius:6px;color:#0a2540;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:all 0.15s;">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+
+        <!-- Google signed-in status -->
+        <div id="googleSignedInStatus" style="display:none;background:rgba(52,168,83,0.15);border:1px solid rgba(52,168,83,0.3);border-radius:6px;padding:10px 14px;margin-bottom:12px;align-items:center;gap:8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span style="font-size:12px;color:#a8e6b8;">Signed in as <span id="googleUserEmail" style="font-weight:600;"></span></span>
+          <span onclick="signOutGoogle()" style="font-size:11px;color:rgba(255,255,255,0.4);cursor:pointer;margin-left:auto;text-decoration:underline;">Sign out</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.3);">or use access code</div>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+        </div>
+
         <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:24px;">
           <div style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);margin-bottom:8px;">Access code</div>
           <input type="password" id="accessCode" placeholder="Enter your access code..." autocomplete="off" onkeydown="if(event.key===&apos;Enter&apos;) unlockApp()" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#fff;font-family:&apos;Inter&apos;,sans-serif;font-size:14px;outline:none;margin-bottom:10px;transition:all 0.15s;" />
