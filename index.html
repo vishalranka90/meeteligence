@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeteligence — The smartest person in every room</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --navy:#0a2540;
+  --navy2:#0d2d4a;
+  --purple:#5469d4;
+  --purple2:#4356c0;
+  --purple-light:#eef0fb;
+  --white:#ffffff;
+  --off:#f6f9fc;
+  --text2:#425466;
+  --text3:#697386;
+  --text4:#8898aa;
+  --border:#e6ebf1;
+  --green:#0ead69;
+  --rose:#e53e6d;
+}
+
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--navy);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 60px;height:64px;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:'Instrument Serif',serif;font-size:22px;color:var(--navy);text-decoration:none;letter-spacing:-0.3px;}
+.nav-logo span{color:var(--purple);}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{font-size:14px;color:var(--text2);text-decoration:none;font-weight:500;transition:color 0.15s;}
+.nav-links a:hover{color:var(--navy);}
+.nav-cta{padding:9px 20px;background:#5469d4;border-radius:8px;color:#ffffff !important;font-size:14px;font-weight:700;text-decoration:none;transition:all 0.15s;box-shadow:0 2px 12px rgba(84,105,212,0.5);border:2px solid #5469d4;}
+.nav-cta:hover{background:var(--purple2);transform:translateY(-1px);box-shadow:0 4px 14px rgba(84,105,212,0.5);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:space-between;gap:48px;
+  padding:120px 60px 80px;
+  position:relative;overflow:hidden;
+  background:var(--navy);
+}
+.hero-content{flex:0 0 500px;max-width:500px;}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(84,105,212,0.25) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(84,105,212,0.12) 0%, transparent 60%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+.hero-content{position:relative;z-index:1;max-width:640px;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;background:rgba(84,105,212,0.2);
+  border:1px solid rgba(84,105,212,0.4);border-radius:100px;
+  font-size:12px;font-weight:600;color:#80b0ff;
+  letter-spacing:0.5px;margin-bottom:32px;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+h1{
+  font-family:'Instrument Serif',serif;
+  font-size:72px;line-height:1.0;letter-spacing:-2px;
+  color:var(--white);margin-bottom:28px;
+}
+h1 em{color:#80b0ff;font-style:italic;}
+
+.hero-sub{
+  font-size:19px;line-height:1.6;color:#8898aa;
+  margin-bottom:48px;font-weight:400;max-width:520px;
+}
+.hero-sub strong{color:#c8d8f8;font-weight:500;}
+
+.hero-ctas{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:56px;}
+.cta-primary{
+  padding:14px 28px;background:var(--purple);border:none;border-radius:10px;
+  color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;
+  cursor:pointer;text-decoration:none;display:inline-block;
+  transition:all 0.2s;box-shadow:0 4px 20px rgba(84,105,212,0.4);
+}
+.cta-primary:hover{background:var(--purple2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(84,105,212,0.5);}
+.cta-secondary{
+  padding:14px 28px;background:transparent;border:1.5px solid rgba(255,255,255,0.2);
+  border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;
+  font-weight:500;cursor:pointer;text-decoration:none;display:inline-block;
+  transition:all 0.2s;
+}
+.cta-secondary:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.05);}
+
+.hero-stats{display:flex;gap:40px;}
+.stat{border-left:2px solid rgba(255,255,255,0.1);padding-left:20px;}
+.stat-num{font-family:'Instrument Serif',serif;font-size:36px;color:var(--white);line-height:1;}
+.stat-label{font-size:12px;color:#697386;margin-top:4px;font-weight:500;}
+
+/* Hero right — brief mockup */
+.hero-visual{
+  flex:0 0 440px;max-width:440px;
+}
+.brief-card{
+  background:#0d1f33;border:1px solid #1e3a5c;border-radius:16px;
+  padding:24px;box-shadow:0 32px 64px rgba(0,0,0,0.4);
+}
+.brief-header{margin-bottom:20px;}
+.brief-company{font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.brief-meta{font-size:12px;color:#697386;}
+.brief-divider{height:1px;background:#1e3a5c;margin-bottom:16px;}
+.brief-section{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;}
+.brief-icon{
+  width:28px;height:28px;border-radius:6px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.brief-section-title{font-size:11px;font-weight:700;color:#8898aa;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:3px;}
+.brief-section-text{font-size:12px;color:#c8d8e8;line-height:1.5;}
+.brief-sources{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;}
+.source-pill{
+  padding:4px 10px;background:#1e3a5c;border-radius:20px;
+  font-size:10px;color:#8898aa;font-weight:500;
+}
+.brief-generating{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;background:rgba(84,105,212,0.15);border:1px solid rgba(84,105,212,0.3);
+  border-radius:8px;margin-bottom:16px;
+}
+.gen-dot{width:8px;height:8px;border-radius:50%;background:var(--purple);animation:pulse 1s infinite;}
+.gen-text{font-size:12px;color:#80b0ff;font-weight:500;}
+
+/* ── LOGOS ── */
+.logos{padding:60px;border-bottom:1px solid var(--border);}
+.logos-label{text-align:center;font-size:12px;font-weight:600;color:var(--text4);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;}
+.logos-row{display:flex;align-items:center;justify-content:center;gap:60px;flex-wrap:wrap;}
+.logo-item{font-size:18px;font-weight:700;color:var(--border);letter-spacing:-0.5px;font-family:'Instrument Serif',serif;}
+
+/* ── HOW IT WORKS ── */
+.section{padding:100px 60px;}
+.section-label{font-size:12px;font-weight:700;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.section-title{font-family:'Instrument Serif',serif;font-size:52px;letter-spacing:-1.5px;line-height:1.1;margin-bottom:20px;}
+.section-sub{font-size:18px;color:var(--text3);line-height:1.6;max-width:540px;}
+
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:64px;}
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);position:relative;}
+.step:last-child{border-bottom:none;}
+.step-num{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;flex-shrink:0;
+  font-family:'Instrument Serif',serif;
+}
+.step-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.step-desc{font-size:14px;color:var(--text3);line-height:1.6;}
+.step-tag{
+  display:inline-block;padding:2px 8px;
+  background:var(--purple-light);color:var(--purple);
+  border-radius:4px;font-size:11px;font-weight:600;margin-top:8px;
+}
+
+.sources-visual{
+  background:var(--off);border-radius:20px;padding:32px;
+  border:1px solid var(--border);
+}
+.source-item{
+  display:flex;align-items:center;gap:16px;
+  padding:14px;background:var(--white);border-radius:10px;
+  margin-bottom:10px;border:1px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+.source-item:last-child{margin-bottom:0;}
+.source-icon{font-size:24px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--off);border-radius:10px;}
+.source-name{font-size:14px;font-weight:700;color:var(--navy);}
+.source-desc{font-size:12px;color:var(--text4);}
+.source-check{margin-left:auto;width:20px;height:20px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;}
+.arrow-down{text-align:center;padding:8px;color:var(--text4);font-size:20px;}
+.brief-result{
+  padding:14px;background:var(--purple);border-radius:10px;
+  display:flex;align-items:center;gap:12px;margin-top:10px;
+}
+.brief-result-text{font-size:13px;font-weight:700;color:#fff;}
+.brief-result-sub{font-size:11px;color:rgba(255,255,255,0.7);}
+
+/* ── FEATURES ── */
+.features{padding:100px 60px;background:var(--navy);}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px;background:rgba(255,255,255,0.05);border-radius:20px;overflow:hidden;}
+.feature{padding:36px;background:var(--navy);}
+.feature:hover{background:#0d2d4a;}
+.feature-icon{font-size:28px;margin-bottom:16px;}
+.feature-title{font-size:17px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.feature-desc{font-size:14px;color:#8898aa;line-height:1.6;}
+
+/* ── BRIEF SECTIONS ── */
+.sections{padding:100px 60px;background:var(--off);}
+.sections-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:64px;}
+.brief-pill{
+  padding:20px;background:var(--white);border-radius:12px;
+  border:1px solid var(--border);transition:all 0.2s;cursor:default;
+}
+.brief-pill:hover{border-color:var(--purple);transform:translateY(-3px);box-shadow:0 8px 24px rgba(84,105,212,0.12);}
+.pill-icon{font-size:24px;margin-bottom:12px;}
+.pill-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.pill-desc{font-size:12px;color:var(--text4);line-height:1.5;}
+
+/* ── TESTIMONIAL / QUOTE ── */
+.quote-section{padding:100px 60px;text-align:center;}
+.quote-text{
+  font-family:'Instrument Serif',serif;font-size:42px;
+  letter-spacing:-1px;line-height:1.2;color:var(--navy);
+  max-width:800px;margin:0 auto 32px;
+}
+.quote-text em{color:var(--purple);font-style:italic;}
+.quote-author{font-size:14px;color:var(--text4);font-weight:500;}
+
+/* ── PRICING ── */
+.pricing{padding:100px 60px;background:var(--navy);}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;max-width:960px;margin-left:auto;margin-right:auto;}
+.plan{
+  background:#0d1f33;border:1px solid #1e3a5c;border-radius:16px;padding:32px;
+  transition:all 0.2s;
+}
+.plan:hover{border-color:var(--purple);transform:translateY(-4px);}
+.plan.featured{background:var(--purple);border-color:var(--purple);}
+.plan-badge{font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.plan-name{font-family:'Instrument Serif',serif;font-size:28px;color:var(--white);margin-bottom:8px;}
+.plan-price{font-size:48px;font-weight:700;color:var(--white);line-height:1;margin-bottom:4px;}
+.plan-price span{font-size:16px;font-weight:400;color:rgba(255,255,255,0.5);}
+.plan-desc{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;}
+.plan-divider{height:1px;background:rgba(255,255,255,0.1);margin-bottom:24px;}
+.plan-feature{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:13px;color:rgba(255,255,255,0.8);}
+.plan-check{color:var(--green);font-size:14px;}
+.plan-cta{
+  width:100%;padding:12px;border-radius:8px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;margin-top:24px;transition:all 0.2s;text-decoration:none;display:block;text-align:center;
+}
+.plan-cta-default{background:rgba(255,255,255,0.1);color:#fff;}
+.plan-cta-default:hover{background:rgba(255,255,255,0.2);}
+.plan-cta-featured{background:var(--white);color:var(--purple);}
+.plan-cta-featured:hover{background:var(--off);}
+
+/* ── CTA SECTION ── */
+.cta-section{
+  padding:120px 60px;text-align:center;
+  background:linear-gradient(135deg, var(--navy) 0%, #0d2d4a 100%);
+  position:relative;overflow:hidden;
+}
+.cta-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(84,105,212,0.2) 0%, transparent 70%);
+}
+.cta-section h2{
+  font-family:'Instrument Serif',serif;font-size:64px;
+  letter-spacing:-2px;color:var(--white);margin-bottom:20px;
+  position:relative;z-index:1;
+}
+.cta-section p{font-size:18px;color:#8898aa;margin-bottom:48px;position:relative;z-index:1;}
+.cta-buttons{display:flex;align-items:center;justify-content:center;gap:16px;position:relative;z-index:1;flex-wrap:wrap;}
+
+/* ── FOOTER ── */
+footer{
+  padding:48px 60px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;
+}
+.footer-logo{font-family:'Instrument Serif',serif;font-size:20px;color:var(--navy);}
+.footer-logo span{color:var(--purple);}
+.footer-links{display:flex;gap:32px;}
+.footer-links a{font-size:13px;color:var(--text4);text-decoration:none;transition:color 0.15s;}
+.footer-links a:hover{color:var(--navy);}
+.footer-copy{font-size:12px;color:var(--text4);}
+
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease, transform 0.6s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* Hamburger */
+.hamburger{
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;cursor:pointer;padding:4px;
+}
+.hamburger span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all 0.2s;}
+.mobile-menu{
+  display:none;flex-direction:column;
+  position:fixed;top:64px;left:0;right:0;
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:16px 24px;z-index:99;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+}
+.mobile-menu a{
+  padding:14px 0;font-size:15px;font-weight:500;color:var(--navy);
+  text-decoration:none;border-bottom:1px solid var(--border);display:block;
+}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu-cta{
+  margin-top:8px;padding:12px !important;background:var(--purple);
+  color:#fff !important;border-radius:8px;text-align:center;
+  font-weight:600 !important;border-bottom:none !important;
+}
+.mobile-menu.open{display:flex;}
+
+@media(max-width:900px){
+  /* Nav */
+  nav{padding:0 20px;}
+  .nav-links a:not(.nav-cta){display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+  #landingIllustration{display:none !important;}
+
+  /* Hero */
+  .hero{
+    flex-direction:column;gap:32px;
+    padding:100px 24px 60px;
+    min-height:auto;
+  }
+  .hero-content{flex:none;max-width:100%;}
+  h1{font-size:42px;letter-spacing:-1px;}
+  .hero-sub{font-size:16px;}
+  .hero-ctas{flex-direction:column;}
+  .cta-primary,.cta-secondary{width:100%;text-align:center;}
+  .hero-stats{gap:20px;flex-wrap:wrap;}
+  .stat{padding-left:16px;}
+  .stat-num{font-size:24px;}
+  .hero-visual{flex:none;max-width:100%;width:100%;}
+  .brief-card{padding:16px;}
+
+  /* Logos */
+  .logos{padding:40px 24px;}
+  .logos-row{gap:24px;flex-wrap:wrap;justify-content:center;}
+
+  /* Sections */
+  .section,.features,.sections,.pricing,.quote-section,.cta-section{padding:60px 24px;}
+  .section-title{font-size:36px;}
+  .how-grid{grid-template-columns:1fr;gap:40px;}
+  .features-grid{grid-template-columns:1fr;}
+  .sections-grid{grid-template-columns:1fr 1fr;}
+  .pricing-grid{grid-template-columns:1fr;max-width:400px;}
+  .quote-text{font-size:28px;}
+  .cta-section h2{font-size:36px;}
+  .cta-buttons{flex-direction:column;align-items:stretch;}
+  .cta-buttons a{text-align:center;}
+
+  /* Footer */
+  footer{padding:32px 24px;flex-direction:column;align-items:center;text-align:center;gap:16px;}
+  .footer-links{flex-wrap:wrap;justify-content:center;gap:20px;}
+}
+
+@media(max-width:480px){
+  h1{font-size:34px;}
+  .hero-badge{font-size:11px;}
+  .sections-grid{grid-template-columns:1fr;}
+  .section-title{font-size:30px;}
+  .plan-price{font-size:36px;}
+}
+</style>
+<script>if (history.scrollRestoration) history.scrollRestoration = "manual";</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">meet<span>eligence</span></a>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a class="nav-cta" href="/app.html">Try it free →</a>
+  </div>
+  <!-- Mobile hamburger -->
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#how" onclick="toggleMenu()">How it works</a>
+  <a href="#features" onclick="toggleMenu()">Features</a>
+  <a href="#pricing" onclick="toggleMenu()">Pricing</a>
+  <a href="/app.html" class="mobile-menu-cta">Try it free →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Now live · Early access
+    </div>
+    <h1>The smartest person<br>in every <em>room</em></h1>
+    <p class="hero-sub">
+      AI meeting intelligence for B2B sales and consulting.
+      <strong>One brief. Every source. 30 seconds.</strong>
+    </p>
+    <div class="hero-ctas">
+      <a href="/app.html" class="cta-primary">Get early access →</a>
+      <a href="#how" class="cta-secondary">See how it works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">30s</div>
+        <div class="stat-label">Brief generation</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Brief sections</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Data sources</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$29</div>
+        <div class="stat-label">Starting price</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Meeting room SVG illustration -->
+  <div id="landingIllustration" style="flex:0 0 280px;display:flex;align-items:center;justify-content:center;">
+    <svg viewBox="0 0 280 380" xmlns="http://www.w3.org/2000/svg" style="width:280px;height:380px;">
+      <!-- Room background -->
+      <rect width="280" height="380" fill="none"/>
+      
+      <!-- Table -->
+      <ellipse cx="140" cy="230" rx="100" ry="32" fill="#1e3a5c" opacity="0.8"/>
+      <rect x="50" y="228" width="180" height="80" rx="4" fill="#1a3352" opacity="0.6"/>
+      <ellipse cx="140" cy="308" rx="90" ry="18" fill="#152840" opacity="0.5"/>
+      
+      <!-- Table top surface -->
+      <ellipse cx="140" cy="228" rx="100" ry="30" fill="#2a4a6c"/>
+      
+      <!-- Laptop on table -->
+      <rect x="108" y="200" width="64" height="42" rx="4" fill="#0d1f33" stroke="#3a5a7c" stroke-width="1"/>
+      <rect x="110" y="202" width="60" height="35" rx="2" fill="#1e3a5c"/>
+      <!-- Screen glow -->
+      <rect x="112" y="204" width="56" height="31" rx="2" fill="#5469d4" opacity="0.3"/>
+      <!-- Screen content lines -->
+      <rect x="116" y="208" width="30" height="2" rx="1" fill="#80b0ff" opacity="0.8"/>
+      <rect x="116" y="213" width="44" height="1.5" rx="1" fill="#5469d4" opacity="0.6"/>
+      <rect x="116" y="217" width="38" height="1.5" rx="1" fill="#5469d4" opacity="0.5"/>
+      <rect x="116" y="221" width="42" height="1.5" rx="1" fill="#5469d4" opacity="0.4"/>
+      <rect x="116" y="225" width="35" height="1.5" rx="1" fill="#5469d4" opacity="0.3"/>
+      <!-- Laptop base -->
+      <rect x="104" y="241" width="72" height="6" rx="2" fill="#0d1f33" stroke="#3a5a7c" stroke-width="1"/>
+      
+      <!-- Person 1 - left side of table (sitting) -->
+      <!-- Head -->
+      <circle cx="72" cy="175" r="14" fill="#f4a261" opacity="0.9"/>
+      <!-- Hair -->
+      <ellipse cx="72" cy="163" rx="14" ry="8" fill="#2d1b69" opacity="0.8"/>
+      <!-- Body -->
+      <rect x="58" y="188" width="28" height="32" rx="8" fill="#5469d4" opacity="0.85"/>
+      <!-- Arms -->
+      <rect x="46" y="192" width="14" height="8" rx="4" fill="#5469d4" opacity="0.7"/>
+      <rect x="80" y="192" width="14" height="8" rx="4" fill="#5469d4" opacity="0.7"/>
+      <!-- Hands on table -->
+      <circle cx="50" cy="198" r="5" fill="#f4a261" opacity="0.8"/>
+      <circle cx="90" cy="212" r="5" fill="#f4a261" opacity="0.8"/>
+
+      <!-- Person 2 - right side (standing/presenting) -->
+      <!-- Head -->
+      <circle cx="210" cy="162" r="15" fill="#e8c5a0" opacity="0.9"/>
+      <!-- Hair -->
+      <ellipse cx="210" cy="149" rx="15" ry="9" fill="#1a1a2e" opacity="0.8"/>
+      <!-- Body -->
+      <rect x="196" y="176" width="28" height="40" rx="8" fill="#0ead69" opacity="0.85"/>
+      <!-- Arms - one pointing -->
+      <rect x="183" y="180" width="14" height="8" rx="4" fill="#0ead69" opacity="0.7"/>
+      <rect x="223" y="178" width="22" height="7" rx="4" fill="#0ead69" opacity="0.7" transform="rotate(-20 223 178)"/>
+      <!-- Hand pointing -->
+      <circle cx="245" cy="172" r="5" fill="#e8c5a0" opacity="0.8"/>
+      
+      <!-- Person 3 - far right at table -->
+      <circle cx="210" cy="245" r="11" fill="#f4a261" opacity="0.85"/>
+      <ellipse cx="210" cy="235" rx="11" ry="6" fill="#4a3728" opacity="0.8"/>
+      <rect x="200" y="255" width="22" height="25" rx="6" fill="#e53e6d" opacity="0.8"/>
+
+      <!-- Floating brief card - top right -->
+      <rect x="178" y="60" width="90" height="70" rx="8" fill="#0d1f33" stroke="#5469d4" stroke-width="1" opacity="0.95"/>
+      <rect x="183" y="68" width="50" height="4" rx="2" fill="#5469d4" opacity="0.8"/>
+      <rect x="183" y="76" width="75" height="2.5" rx="1" fill="#8898aa" opacity="0.6"/>
+      <rect x="183" y="81" width="65" height="2.5" rx="1" fill="#8898aa" opacity="0.5"/>
+      <rect x="183" y="86" width="70" height="2.5" rx="1" fill="#8898aa" opacity="0.4"/>
+      <rect x="183" y="93" width="40" height="2.5" rx="1" fill="#0ead69" opacity="0.7"/>
+      <rect x="183" y="98" width="55" height="2.5" rx="1" fill="#8898aa" opacity="0.4"/>
+      <rect x="183" y="103" width="45" height="2.5" rx="1" fill="#8898aa" opacity="0.3"/>
+      <!-- Card glow -->
+      <rect x="178" y="60" width="90" height="70" rx="8" fill="none" stroke="#5469d4" stroke-width="1" opacity="0.4"/>
+      
+      <!-- Connection line from card to laptop -->
+      <line x1="178" y1="95" x2="162" y2="215" stroke="#5469d4" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+      
+      <!-- Floating notification - top left -->
+      <rect x="10" y="80" width="95" height="36" rx="8" fill="#0d1f33" stroke="#0ead69" stroke-width="1" opacity="0.9"/>
+      <circle cx="24" cy="98" r="7" fill="#0ead69" opacity="0.2"/>
+      <text x="24" y="102" font-size="9" fill="#0ead69" text-anchor="middle">⚡</text>
+      <rect x="36" y="89" width="55" height="3" rx="1" fill="#0ead69" opacity="0.7"/>
+      <rect x="36" y="96" width="45" height="2.5" rx="1" fill="#8898aa" opacity="0.5"/>
+      <rect x="36" y="102" width="50" height="2.5" rx="1" fill="#8898aa" opacity="0.4"/>
+      
+      <!-- AI sparkle dots -->
+      <circle cx="145" cy="140" r="2.5" fill="#5469d4" opacity="0.8"/>
+      <circle cx="155" cy="130" r="1.5" fill="#80b0ff" opacity="0.6"/>
+      <circle cx="135" cy="148" r="1.5" fill="#5469d4" opacity="0.5"/>
+      <circle cx="160" cy="145" r="1" fill="#80b0ff" opacity="0.4"/>
+      
+      <!-- Bottom label -->
+      <text x="140" y="355" font-size="11" fill="#697386" text-anchor="middle" font-family="DM Sans, sans-serif">AI-powered meeting prep</text>
+      <text x="140" y="370" font-size="10" fill="#5469d4" text-anchor="middle" font-family="DM Sans, sans-serif">in 30 seconds</text>
+    </svg>
+  </div>
+
+  <!-- Brief Mockup -->
+  <div class="hero-visual">
+    <div class="brief-card">
+      <div class="brief-generating">
+        <div class="gen-dot"></div>
+        <div class="gen-text">Generating brief for Acme Corporation · Rahul Mehta</div>
+      </div>
+      <div class="brief-header">
+        <div class="brief-company">Acme Corporation</div>
+        <div class="brief-meta">Sarah Mitchell · VP Operations · Discovery Call · Today 2:30 PM</div>
+      </div>
+      <div class="brief-divider"></div>
+      <div class="brief-section">
+        <div class="brief-icon" style="background:#eef0fb;">📊</div>
+        <div>
+          <div class="brief-section-title">Company Snapshot</div>
+          <div class="brief-section-text">Mid-size SaaS company · Series B · 800+ employees · Recently expanded to APAC markets</div>
+        </div>
+      </div>
+      <div class="brief-section">
+        <div class="brief-icon" style="background:#e6f9f0;">🎯</div>
+        <div>
+          <div class="brief-section-title">Contact Insights</div>
+          <div class="brief-section-text">Sarah leads operations strategy at Acme. Previously at McKinsey. MBA Wharton, BSc MIT.</div>
+        </div>
+      </div>
+      <div class="brief-section">
+        <div class="brief-icon" style="background:#fce8f0;">⚠️</div>
+        <div>
+          <div class="brief-section-title">Watch Outs</div>
+          <div class="brief-section-text">⚠️ Pending: Q2 proposal sent March 12 — no response yet. Raise this early.</div>
+        </div>
+      </div>
+      <div class="brief-section">
+        <div class="brief-icon" style="background:#e8f4ff;">🎤</div>
+        <div>
+          <div class="brief-section-title">Opening Line</div>
+          <div class="brief-section-text">"Following up on the Q2 proposal — keen to hear your thoughts before the APAC rollout kicks off."</div>
+        </div>
+      </div>
+      <div class="brief-sources">
+        <span class="source-pill">🌐 Web research</span>
+        <span class="source-pill">🔗 LinkedIn</span>
+        <span class="source-pill">📧 Gmail</span>
+        <span class="source-pill">📅 Calendar</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos">
+  <div class="logos-label">Trusted by sales teams at</div>
+  <div class="logos-row">
+    <div class="logo-item">Mastek</div>
+    <div class="logo-item">eClinicalWorks</div>
+    <div class="logo-item">BizAnalytica</div>
+    <div class="logo-item">Accenture</div>
+    <div class="logo-item">Deloitte</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="fade-up">
+    <div class="section-label">How it works</div>
+    <div class="section-title">From meeting invite<br>to full brief</div>
+    <div class="section-sub">Connect once. Brief automatically. Walk in sharp, every time.</div>
+  </div>
+  <div class="how-grid">
+    <div class="steps fade-up">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Connect Gmail & Calendar</div>
+          <div class="step-desc">One-time OAuth connection. Meeteligence reads your upcoming meetings and identifies who you're meeting.</div>
+          <span class="step-tag">One-time setup</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Click Generate Brief</div>
+          <div class="step-desc">See today's meetings on your dashboard. One click starts the research — web, LinkedIn, email history, all at once.</div>
+          <span class="step-tag">30 seconds</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Walk in prepared</div>
+          <div class="step-desc">8-section brief with company intel, contact insights, your angle, sharp questions, watch outs, reference wins and a perfect opening line.</div>
+          <span class="step-tag">8 sections</span>
+        </div>
+      </div>
+    </div>
+    <div class="sources-visual fade-up">
+      <div class="source-item">
+        <div class="source-icon">🌐</div>
+        <div>
+          <div class="source-name">Live Web Research</div>
+          <div class="source-desc">Company news, financials, partnerships</div>
+        </div>
+        <div class="source-check">✓</div>
+      </div>
+      <div class="source-item">
+        <div class="source-icon">🔗</div>
+        <div>
+          <div class="source-name">LinkedIn Profile</div>
+          <div class="source-desc">Career, background, what they care about</div>
+        </div>
+        <div class="source-check">✓</div>
+      </div>
+      <div class="source-item">
+        <div class="source-icon">📧</div>
+        <div>
+          <div class="source-name">Gmail History</div>
+          <div class="source-desc">Past conversations, open items, context</div>
+        </div>
+        <div class="source-check">✓</div>
+      </div>
+      <div class="source-item">
+        <div class="source-icon">📅</div>
+        <div>
+          <div class="source-name">Google Calendar</div>
+          <div class="source-desc">Auto-reads meeting attendees and context</div>
+        </div>
+        <div class="source-check">✓</div>
+      </div>
+      <div class="arrow-down">↓</div>
+      <div class="brief-result">
+        <div style="font-size:24px;">⚡</div>
+        <div>
+          <div class="brief-result-text">Full Meeting Brief — Ready in 30s</div>
+          <div class="brief-result-sub">Company · Contact · Angle · Questions · Opening Line</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="fade-up" style="color:var(--white);">
+    <div class="section-label">Features</div>
+    <div class="section-title" style="color:var(--white);">Everything you need<br>to win the meeting</div>
+  </div>
+  <div class="features-grid fade-up">
+    <div class="feature">
+      <div class="feature-icon">📅</div>
+      <div class="feature-title">Calendar Dashboard</div>
+      <div class="feature-desc">See all your meetings for the week. One click generates a full brief for any meeting — no typing required.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📧</div>
+      <div class="feature-title">Email Intelligence</div>
+      <div class="feature-desc">Automatically scans your Gmail for past conversations with the contact. Surfaces open items and relationship context.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔗</div>
+      <div class="feature-title">LinkedIn Enrichment</div>
+      <div class="feature-desc">Auto-finds and enriches contact profiles. Shows current role, career background, education and what they care about.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🌐</div>
+      <div class="feature-title">Live Web Research</div>
+      <div class="feature-desc">Searches the web for latest company news, financial results, partnerships and strategic priorities before every meeting.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">30-Second Brief</div>
+      <div class="feature-desc">All four sources combined into one actionable brief. Company snapshot, contact insights, your angle, questions and opening line.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📤</div>
+      <div class="feature-title">Share Anywhere</div>
+      <div class="feature-desc">Download as PDF, send to Microsoft Teams, or email directly. Brief ready on any device before you walk in.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BRIEF SECTIONS -->
+<section class="sections">
+  <div class="fade-up" style="text-align:center;margin-bottom:0;">
+    <div class="section-label" style="text-align:center;">The Brief</div>
+    <div class="section-title" style="text-align:center;">8 sections.<br>Everything you need.</div>
+  </div>
+  <div class="sections-grid fade-up">
+    <div class="brief-pill">
+      <div class="pill-icon">📊</div>
+      <div class="pill-title">Company Snapshot</div>
+      <div class="pill-desc">Size, industry, key services and what they actually do — verified from web research.</div>
+    </div>
+    <div class="brief-pill">
+      <div class="pill-icon">🔍</div>
+      <div class="pill-title">Company Intel</div>
+      <div class="pill-desc">Recent news, announcements, financial results and strategic priorities.</div>
+    </div>
+    <div class="brief-pill">
+      <div class="pill-icon">🎯</div>
+      <div class="pill-title">Contact Insights</div>
+      <div class="pill-desc">Current role, career background, education and what this person likely cares about.</div>
+    </div>
+    <div class="brief-pill">
+      <div class="pill-icon">⚡</div>
+      <div class="pill-title">Our Angle</div>
+      <div class="pill-desc">How your offering maps to their specific situation, industry and role.</div>
+    </div>
+    <div class="brief-pill">
+      <div class="pill-icon">❓</div>
+      <div class="pill-title">Questions to Ask</div>
+      <div class="pill-desc">5 sharp, senior-level questions tailored to their role and company situation.</div>
+    </div>
+    <div class="brief-pill">
+      <div class="pill-icon">⚠️</div>
+      <div class="pill-title">Watch Outs</div>
+      <div class="pill-desc">Risks, sensitivities and pending items from your email history with this contact.</div>
+    </div>
+    <div class="brief-pill">
+      <div class="pill-icon">🏆</div>
+      <div class="pill-title">Reference Wins</div>
+      <div class="pill-desc">Relevant client wins from your deck, filtered by prospect vertical and injected automatically.</div>
+    </div>
+    <div class="brief-pill">
+      <div class="pill-icon">🎤</div>
+      <div class="pill-title">Opening Line</div>
+      <div class="pill-desc">One powerful sentence that shows you did your homework. References your last email naturally.</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section fade-up">
+  <div class="quote-text">
+    "I used to spend 2 hours before every important meeting.<br>Now I spend <em>30 seconds.</em>"
+  </div>
+  <div class="quote-author">— Early access user · B2B Sales, Enterprise SaaS</div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="fade-up" style="text-align:center;">
+    <div class="section-label" style="color:#80b0ff;text-align:center;">Pricing</div>
+    <div class="section-title" style="color:var(--white);text-align:center;">Simple, transparent pricing</div>
+    <div class="section-sub" style="color:#8898aa;margin:0 auto;">Start free. Upgrade when you're ready.</div>
+  </div>
+  <div class="pricing-grid fade-up">
+    <div class="plan">
+      <div class="plan-badge">Starter</div>
+      <div class="plan-name">Individual</div>
+      <div class="plan-price">$29<span>/month</span></div>
+      <div class="plan-desc">For individual sales reps and consultants</div>
+      <div class="plan-divider"></div>
+      <div class="plan-feature"><span class="plan-check">✓</span> 10 briefs per month</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Gmail + Calendar integration</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> LinkedIn enrichment</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> PDF download</div>
+      <a href="/app.html" class="plan-cta plan-cta-default">Get started →</a>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">$79<span>/month</span></div>
+      <div class="plan-desc">For power users who live in meetings</div>
+      <div class="plan-divider"></div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Unlimited briefs</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Gmail + Outlook + Calendar</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Calendar auto-brief</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Teams + Email delivery</div>
+      <a href="/app.html" class="plan-cta plan-cta-featured">Get started →</a>
+    </div>
+    <div class="plan">
+      <div class="plan-badge">Team</div>
+      <div class="plan-name">Business</div>
+      <div class="plan-price">$199<span>/month</span></div>
+      <div class="plan-desc">For sales teams and consulting firms</div>
+      <div class="plan-divider"></div>
+      <div class="plan-feature"><span class="plan-check">✓</span> 5 seats included</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Team dashboard</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Outlook integration</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Dedicated support</div>
+      <a href="/app.html" class="plan-cta plan-cta-default">Get started →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <h2>Walk in.<br>Know more.</h2>
+  <p>Your first brief is 30 seconds away. No credit card required.</p>
+  <div class="cta-buttons">
+    <a href="/app.html" class="cta-primary" style="font-size:17px;padding:16px 36px;">Get early access →</a>
+    <a href="#how" class="cta-secondary" style="font-size:17px;padding:16px 36px;">See how it works</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">meet<span>eligence</span></div>
+  <div class="footer-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/privacy.html">Privacy</a>
+  </div>
+  <div class="footer-copy">© 2026 Meeteligence. All rights reserved.</div>
+</footer>
+
+<script>
+// Fade up on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+function toggleMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+}
+
+// Close menu on outside click
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.querySelector('.hamburger');
+  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

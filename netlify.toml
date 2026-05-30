@@ -1,0 +1,36 @@
+[build]
+  functions = "netlify/functions"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type"
+    Access-Control-Allow-Methods = "POST, GET, OPTIONS"
+
+[functions]
+  node_bundler = "esbuild"
+
+[functions.generate]
+  timeout = 90
+
+[functions.linkedin-search]
+  timeout = 30
+
+[functions.research]
+  timeout = 90
+
+[functions.gmail-scan]
+  timeout = 30
+
+[functions.calendar-scan]
+  timeout = 30
+
+[functions.contact-search]
+  timeout = 30
+
+[functions.extract-wins]
+  timeout = 90
+
+[functions.incumbent]
+  timeout = 30
