@@ -759,11 +759,10 @@ a.step:hover {
 <!-- Supabase Auth -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://eevbyktubxtokjnigulw.supabase.co';
+var SUPABASE_URL = 'https://eevbyktubxtokjnigulw.supabase.co';
 // ANON KEY — safe to expose in client (protected by RLS)
 // Replace this with your actual anon public key from Supabase dashboard → API Keys
-const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVldmJ5a3R1Ynh0b2tqbmlndWx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNTEzNzAsImV4cCI6MjA5NTcyNzM3MH0.cZ8_WEqlxAo-pcYRZNyLWSia_c6edXhepEM7V0OrbHA;
-
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVldmJ5a3R1Ynh0b2tqbmlndWx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxNTEzNzAsImV4cCI6MjA5NTcyNzM3MH0.cZ8_WEqlxAo-pcYRZNyLWSia_c6edXhepEM7V0OrbHA';
 var _sb = null;
 function getSB() {
   if (!_sb) _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
