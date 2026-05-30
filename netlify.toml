@@ -35,5 +35,20 @@
 [functions.incumbent]
   timeout = 30
 
+[functions.log-brief]
+  timeout = 10
+
+[functions.get-briefs]
+  timeout = 10
+
+[functions.get-brief]
+  timeout = 10
+
+[functions.create-checkout]
+  timeout = 15
+
+[functions.stripe-webhook]
+  timeout = 15
+
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_ANON_KEY"

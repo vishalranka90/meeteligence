@@ -515,6 +515,17 @@ a.step:hover {
   display: flex; align-items: center; gap: 8px;
 }
 
+/* Past Briefs rows */
+.past-brief-row {
+  padding: 10px 12px; margin-bottom: 6px;
+  background: rgba(46,142,220,0.04); border: 1px solid rgba(46,142,220,0.12);
+  border-radius: 8px; cursor: pointer; transition: background 0.15s;
+}
+.past-brief-row:hover { background: rgba(46,142,220,0.08); }
+.past-brief-co { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.past-brief-meta { font-size: 11px; color: var(--text3); }
+
+
 /* Error */
 .error-bar {
   background: rgba(255,107,138,0.08); border: 1px solid rgba(255,107,138,0.2);
@@ -821,6 +832,139 @@ async function signOutGoogle() {
   const googleStatus = document.getElementById('googleSignedInStatus');
   if (googleStatus) googleStatus.style.display = 'none';
 }
+
+// ── Usage tracking — log brief to Supabase ─────────────────────────
+async function logBriefToSupabase(briefData) {
+  try {
+    const user = window._sbUser;
+    await fetch('/.netlify/functions/log-brief', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        accessCode: getAccessCode(),
+        userId:     user ? user.id    : null,
+        userEmail:  user ? user.email : null,
+        company:    briefData.company     || '',
+        contact:    briefData.contact     || '',
+        role:       briefData.role        || '',
+        meetingType: briefData.meetingType || '',
+        briefJson:  briefData.briefJson   || {}
+      })
+    });
+    // Soft fail — errors are caught inside the function
+  } catch(e) {
+    console.log('logBriefToSupabase error (non-critical):', e.message);
+  }
+}
+
+// ── Past Briefs — load from Supabase ───────────────────────────────
+async function loadPastBriefs() {
+  const user = window._sbUser;
+  if (!user) {
+    document.getElementById('pastBriefsContent').innerHTML =
+      '<div style="color:var(--text3);font-size:13px;padding:16px 0;">Sign in with Google to see your brief history.</div>';
+    return;
+  }
+
+  document.getElementById('pastBriefsContent').innerHTML =
+    '<div style="color:var(--text3);font-size:13px;padding:16px 0;">Loading...</div>';
+
+  try {
+    const res = await fetch('/.netlify/functions/get-briefs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessCode: getAccessCode(), userId: user.id })
+    });
+    const data = await res.json();
+    const briefs = data.briefs || [];
+
+    if (briefs.length === 0) {
+      document.getElementById('pastBriefsContent').innerHTML =
+        '<div style="color:var(--text3);font-size:13px;padding:16px 0;">No briefs saved yet — generate your first one above.</div>';
+      return;
+    }
+
+    document.getElementById('pastBriefsContent').innerHTML = briefs.map(b => {
+      const date = new Date(b.created_at);
+      const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      const mtLabel = { discovery: 'Discovery', demo: 'Demo', followup: 'Follow-up', qbr: 'QBR' }[b.meeting_type] || b.meeting_type || '';
+      return `
+        <div class="past-brief-row" onclick="reopenBrief('${b.id}')">
+          <div class="past-brief-co">${b.company || '—'}${b.contact ? ' · ' + b.contact : ''}</div>
+          <div class="past-brief-meta">${mtLabel ? mtLabel + ' · ' : ''}${b.role || ''}${b.role ? ' · ' : ''}${dateStr} ${timeStr}</div>
+        </div>`;
+    }).join('');
+
+  } catch(e) {
+    document.getElementById('pastBriefsContent').innerHTML =
+      '<div style="color:var(--text3);font-size:13px;padding:16px 0;">Could not load brief history.</div>';
+  }
+}
+
+async function reopenBrief(briefId) {
+  const user = window._sbUser;
+  if (!user) return;
+  try {
+    const res = await fetch('/.netlify/functions/get-brief', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessCode: getAccessCode(), briefId, userId: user.id })
+    });
+    const data = await res.json();
+    if (!data.brief || !data.brief.brief_json) return;
+    const b = data.brief;
+    renderBrief(b.brief_json, b.company, b.contact, b.role, b.meeting_type, 0);
+    // Scroll to brief
+    document.getElementById('briefOutput')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {
+    console.log('reopenBrief error:', e.message);
+  }
+}
+
+// ── Stripe upgrade ─────────────────────────────────────────────────
+async function startUpgrade(plan) {
+  const user = window._sbUser;
+  const btn = document.getElementById('upgradeBtn_' + plan);
+  if (btn) { btn.disabled = true; btn.textContent = 'Redirecting...'; }
+
+  try {
+    const res = await fetch('/.netlify/functions/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        accessCode: getAccessCode(),
+        plan,
+        userId:    user ? user.id    : null,
+        userEmail: user ? user.email : null
+      })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Could not create checkout session: ' + (data.error || 'Unknown error'));
+      if (btn) { btn.disabled = false; btn.textContent = 'Upgrade'; }
+    }
+  } catch(e) {
+    alert('Upgrade failed: ' + e.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'Upgrade'; }
+  }
+}
+
+// Handle Stripe redirect back after checkout
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('upgrade') === 'success') {
+    const plan = params.get('plan') || 'starter';
+    setTimeout(() => {
+      const label = { starter: 'Starter', pro: 'Pro', team: 'Team' }[plan] || plan;
+      toast('🎉 Welcome to ' + label + '! Your plan is now active.');
+    }, 1000);
+    // Clean URL
+    window.history.replaceState({}, '', '/app.html');
+  }
+});
 </script>
 <body>
 <div class="bg-mesh"></div>
@@ -1260,6 +1404,60 @@ async function signOutGoogle() {
       <div class="brief-sections" id="briefSections"></div>
 
       <div class="sources-bar" id="sourcesBar">🔍 —</div>
+    </div>
+
+    <!-- ── Past Briefs panel ──────────────────────────── -->
+    <div class="panel" id="pastBriefsPanel">
+      <div class="panel-title" style="cursor:pointer;margin-bottom:0;" onclick="togglePastBriefsPanel()">
+        <span class="panel-title-icon">🕐</span> Past Briefs
+        <span id="pastBriefsPanelChevron" style="margin-left:auto;font-size:11px;color:var(--text3);transition:transform 0.2s;">▼</span>
+      </div>
+      <div id="pastBriefsPanelBody" style="display:none;margin-top:14px;">
+        <div id="pastBriefsContent" style="font-size:13px;color:var(--text3);">
+          <div style="color:var(--text3);font-size:13px;">Sign in with Google to see your brief history.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Upgrade panel ──────────────────────────────── -->
+    <div class="panel" id="upgradePanel">
+      <div class="panel-title" style="cursor:pointer;margin-bottom:0;" onclick="toggleUpgradePanel()">
+        <span class="panel-title-icon">⚡</span> Upgrade Plan
+        <span id="upgradePanelChevron" style="margin-left:auto;font-size:11px;color:var(--text3);transition:transform 0.2s;">▼</span>
+      </div>
+      <div id="upgradePanelBody" style="display:none;margin-top:14px;">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.5;">Unlock more briefs, Sonnet quality, and brief history.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <!-- Starter -->
+          <div style="border:1px solid var(--border2);border-radius:10px;padding:14px;background:rgba(46,142,220,0.03);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Starter</div>
+              <div style="font-size:13px;font-weight:700;color:var(--blue);">$29<span style="font-size:11px;font-weight:400;color:var(--text3);">/mo</span></div>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">20 briefs/mo · Haiku · Last 10 saved</div>
+            <button id="upgradeBtn_starter" onclick="startUpgrade('starter')" style="width:100%;padding:8px;background:var(--blue);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Upgrade to Starter</button>
+          </div>
+          <!-- Pro -->
+          <div style="border:2px solid var(--blue);border-radius:10px;padding:14px;background:rgba(46,142,220,0.05);position:relative;">
+            <div style="position:absolute;top:-9px;left:12px;background:var(--blue);color:#fff;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:20px;text-transform:uppercase;">Most Popular</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Pro</div>
+              <div style="font-size:13px;font-weight:700;color:var(--blue);">$79<span style="font-size:11px;font-weight:400;color:var(--text3);">/mo</span></div>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">75 briefs/mo · Sonnet · Last 50 saved</div>
+            <button id="upgradeBtn_pro" onclick="startUpgrade('pro')" style="width:100%;padding:8px;background:var(--blue);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Upgrade to Pro</button>
+          </div>
+          <!-- Team -->
+          <div style="border:1px solid var(--border2);border-radius:10px;padding:14px;background:rgba(46,142,220,0.03);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Team</div>
+              <div style="font-size:13px;font-weight:700;color:var(--blue);">$199<span style="font-size:11px;font-weight:400;color:var(--text3);">/mo</span></div>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Unlimited · Sonnet · Full history + sharing</div>
+            <button id="upgradeBtn_team" onclick="startUpgrade('team')" style="width:100%;padding:8px;background:var(--blue);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Upgrade to Team</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="panel">
@@ -2442,6 +2640,7 @@ async function generate() {
     currentBrief = { ...data.brief, company, contact, role, meeting, offering };
     renderBrief(data.brief, company, contact, role, meeting, 0);
     addRecentBrief(company, contact, role);
+    logBriefToSupabase({ company, contact, role, meetingType: meeting, briefJson: data.brief });
     sessionStorage.removeItem('_contactEmail');
 
     // Clear form fields ready for next brief
@@ -2977,6 +3176,28 @@ function toggleDeckPanel() {
   body.style.display = open ? 'none' : 'block';
   chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
 }
+
+function togglePastBriefsPanel() {
+  const body = document.getElementById('pastBriefsPanelBody');
+  const chevron = document.getElementById('pastBriefsPanelChevron');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+  // Load on first open
+  if (!open && !body.dataset.loaded) {
+    body.dataset.loaded = '1';
+    loadPastBriefs();
+  }
+}
+
+function toggleUpgradePanel() {
+  const body = document.getElementById('upgradePanelBody');
+  const chevron = document.getElementById('upgradePanelChevron');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
 
 // ── Text extraction ───────────────────────────────────────────────
 
