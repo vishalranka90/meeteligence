@@ -34,3 +34,6 @@
 
 [functions.incumbent]
   timeout = 30
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL,SUPABASE_ANON_KEY"
