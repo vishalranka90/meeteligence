@@ -25,7 +25,7 @@ exports.handler = async function(event) {
       };
     }
 
-    if (!plan || !['starter', 'pro', 'team'].includes(plan)) {
+    if (!plan || !['solo', 'pro', 'team'].includes(plan)) {
       return {
         statusCode: 400,
         headers: { 'Access-Control-Allow-Origin': '*' },
@@ -33,11 +33,11 @@ exports.handler = async function(event) {
       };
     }
 
-    // Map plan → Stripe Price ID (set these in Netlify env vars after creating products in Stripe)
+    // Map plan → Stripe Price ID (set these in Netlify env vars)
     const priceIds = {
-      starter: process.env.STRIPE_PRICE_STARTER,  // $29/mo
-      pro:     process.env.STRIPE_PRICE_PRO,       // $79/mo
-      team:    process.env.STRIPE_PRICE_TEAM       // $199/mo
+      solo: process.env.STRIPE_PRICE_SOLO,  // $29/mo
+      pro:  process.env.STRIPE_PRICE_PRO,   // $49/mo
+      team: process.env.STRIPE_PRICE_TEAM   // $199/mo
     };
 
     const priceId = priceIds[plan];

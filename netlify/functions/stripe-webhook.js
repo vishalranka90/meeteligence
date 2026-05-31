@@ -4,10 +4,10 @@
 
 // Plan limits — mirrors the pricing table
 const PLAN_LIMITS = {
-  starter: { briefs_limit: 20,  model: 'haiku',  history_limit: 10  },
-  pro:     { briefs_limit: 75,  model: 'sonnet', history_limit: 50  },
-  team:    { briefs_limit: 9999, model: 'sonnet', history_limit: 9999 },
-  free:    { briefs_limit: 3,   model: 'haiku',  history_limit: 5   }
+  solo:  { briefs_limit: 30,   model: 'haiku',  history_limit: 10  },
+  pro:   { briefs_limit: 100,  model: 'sonnet', history_limit: 9999 },
+  team:  { briefs_limit: 9999, model: 'sonnet', history_limit: 9999 },
+  free:  { briefs_limit: 3,    model: 'haiku',  history_limit: 5   }
 };
 
 exports.handler = async function(event) {
