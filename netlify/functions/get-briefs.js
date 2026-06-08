@@ -2,10 +2,10 @@
 // Returns last N briefs based on plan history_limit
 
 const HISTORY_LIMITS = {
-  starter: 10,
-  pro:     50,
-  team:    200,
-  free:    5
+  free:  0,
+  solo:  10,
+  pro:   9999,
+  team:  9999
 };
 
 exports.handler = async function(event) {
