@@ -988,6 +988,49 @@ async function getUserPlan() {
 
 function invalidatePlanCache() { _planCache = null; }
 
+async function renderPlanIndicator() {
+  const indicator = document.getElementById('planIndicator');
+  const upgradeBtn = document.getElementById('upgradePlanBtn');
+  if (!indicator) return;
+
+  try {
+    const p = await getUserPlan();
+    const { plan, briefs_used, briefs_limit } = p;
+
+    const planLabel = { free: 'Free', solo: 'Solo', pro: 'Pro', team: 'Team' }[plan] || plan;
+
+    let usageText = '';
+    if (plan === 'free') {
+      const usedAnon = parseInt(localStorage.getItem('_briefsUsedAnon') || '0', 10);
+      usageText = usedAnon + ' of 3 free briefs used';
+    } else if (plan === 'team') {
+      usageText = 'Unlimited briefs';
+    } else {
+      usageText = briefs_used + ' of ' + briefs_limit + ' briefs used';
+    }
+
+    indicator.innerHTML =
+      '<span style="font-weight:700;color:var(--blue);">' + planLabel + '</span>' +
+      '<span style="color:var(--text3);margin:0 8px;">·</span>' +
+      '<span style="color:var(--text3);font-size:12px;">' + usageText + '</span>';
+
+    // Show upgrade button for free/solo users
+    if (upgradeBtn) {
+      upgradeBtn.style.display = (plan === 'free' || plan === 'solo') ? 'block' : 'none';
+    }
+  } catch(e) {
+    indicator.textContent = 'Meeteligence · Early Access';
+  }
+}
+
+function openUpgradePanel() {
+  const body = document.getElementById('upgradePanelBody');
+  const chevron = document.getElementById('upgradePanelChevron');
+  if (body) { body.style.display = 'block'; }
+  if (chevron) { chevron.style.transform = 'rotate(180deg)'; }
+  document.getElementById('upgradePanel')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 async function checkBriefLimit() {
   const planData = await getUserPlan();
   const { plan, briefs_used, briefs_limit } = planData;
@@ -1301,7 +1344,8 @@ window.addEventListener('DOMContentLoaded', () => {
     <div class="app-main">
     <div class="key-bar">
       <div class="key-bar-dot"></div>
-      <div class="key-bar-text">Meeteligence · Early Access</div>
+      <div class="key-bar-text" id="planIndicator">Meeteligence · Early Access</div>
+      <button class="key-bar-btn" onclick="openUpgradePanel()" id="upgradePlanBtn" style="display:none;background:linear-gradient(135deg,#1e7fd4,#4a7fe8);border-color:transparent;color:#fff;font-weight:600;">⚡ Upgrade</button>
       <button class="key-bar-btn" onclick="changeKey()">Sign out</button>
     </div>
 
@@ -1902,6 +1946,8 @@ function showApp() {
 
   // Capabilities deck: restore status, show onboarding if first time
   initDeckPanel();
+  // Render plan indicator in key bar
+  setTimeout(() => renderPlanIndicator(), 500);
   const deckSeen = localStorage.getItem('_deckOnboardingSeen');
   if (!deckSeen) {
     setTimeout(() => {
@@ -2761,6 +2807,7 @@ async function generate() {
     logBriefToSupabase({ company, contact, role, meetingType: meeting, briefJson: data.brief });
     incrementLocalBriefCount();
     invalidatePlanCache(); // force re-fetch on next generate
+    renderPlanIndicator(); // refresh usage count in key bar
     sessionStorage.removeItem('_contactEmail');
     // Show upgrade prompt AFTER the brief renders if this was the last free one
     if (window._showUpgradeAfterBrief) {

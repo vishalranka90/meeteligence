@@ -229,7 +229,7 @@ h1 em{color:#80b0ff;font-style:italic;}
 
 /* ── PRICING ── */
 .pricing{padding:100px 60px;background:var(--navy);}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;max-width:960px;margin-left:auto;margin-right:auto;}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:64px;max-width:1120px;margin-left:auto;margin-right:auto;}
 .plan{
   background:#0d1f33;border:1px solid #1e3a5c;border-radius:16px;padding:32px;
   transition:all 0.2s;
@@ -348,7 +348,7 @@ footer{
   .how-grid{grid-template-columns:1fr;gap:40px;}
   .features-grid{grid-template-columns:1fr;}
   .sections-grid{grid-template-columns:1fr 1fr;}
-  .pricing-grid{grid-template-columns:1fr;max-width:400px;}
+  .pricing-grid{grid-template-columns:1fr 1fr;max-width:600px;gap:14px;}
   .quote-text{font-size:28px;}
   .cta-section h2{font-size:36px;}
   .cta-buttons{flex-direction:column;align-items:stretch;}
@@ -771,45 +771,74 @@ footer{
   <div class="fade-up" style="text-align:center;">
     <div class="section-label" style="color:#80b0ff;text-align:center;">Pricing</div>
     <div class="section-title" style="color:var(--white);text-align:center;">Simple, transparent pricing</div>
-    <div class="section-sub" style="color:#8898aa;margin:0 auto;">Start free. Upgrade when you're ready.</div>
+    <div class="section-sub" style="color:#8898aa;margin:0 auto;">Start free. Upgrade when you're ready. No credit card required.</div>
   </div>
   <div class="pricing-grid fade-up">
+
+    <!-- Free -->
     <div class="plan">
-      <div class="plan-badge">Starter</div>
-      <div class="plan-name">Individual</div>
+      <div class="plan-badge">Free</div>
+      <div class="plan-name" style="font-size:22px;">Free</div>
+      <div class="plan-price">$0<span>/month</span></div>
+      <div class="plan-desc">Try it — no credit card needed</div>
+      <div class="plan-divider"></div>
+      <div class="plan-feature"><span class="plan-check">✓</span> 3 briefs (total)</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> LinkedIn enrichment</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Live web research</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> PDF download</div>
+      <div class="plan-feature" style="opacity:0.38;"><span style="font-size:12px;">🔒</span> Email &amp; Calendar scan</div>
+      <div class="plan-feature" style="opacity:0.38;"><span style="font-size:12px;">🔒</span> Brief history</div>
+      <a href="/app.html" class="plan-cta plan-cta-default">Get started free →</a>
+    </div>
+
+    <!-- Solo -->
+    <div class="plan">
+      <div class="plan-badge">Solo</div>
+      <div class="plan-name" style="font-size:22px;">Solo</div>
       <div class="plan-price">$29<span>/month</span></div>
       <div class="plan-desc">For individual sales reps and consultants</div>
       <div class="plan-divider"></div>
-      <div class="plan-feature"><span class="plan-check">✓</span> 10 briefs per month</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Gmail + Calendar integration</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> LinkedIn enrichment</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> 30 briefs / month</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Gmail &amp; Outlook email scan</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Google &amp; Outlook Calendar</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Last 10 briefs saved</div>
       <div class="plan-feature"><span class="plan-check">✓</span> PDF download</div>
+      <div class="plan-feature" style="opacity:0.38;"><span style="font-size:12px;">🔒</span> Incumbent research</div>
       <a href="/app.html" class="plan-cta plan-cta-default">Get started →</a>
     </div>
-    <div class="plan featured">
+
+    <!-- Pro — Most Popular -->
+    <div class="plan featured" style="transform:scale(1.03);">
       <div class="plan-badge">Most Popular</div>
-      <div class="plan-name">Pro</div>
-      <div class="plan-price">$79<span>/month</span></div>
+      <div class="plan-name" style="font-size:22px;">Pro</div>
+      <div class="plan-price">$49<span>/month</span></div>
       <div class="plan-desc">For power users who live in meetings</div>
       <div class="plan-divider"></div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Unlimited briefs</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Gmail + Outlook + Calendar</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Calendar auto-brief</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Teams + Email delivery</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> 100 briefs / month</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Gmail &amp; Outlook email scan</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Google &amp; Outlook Calendar</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Full brief history</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Incumbent research</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> PDF download</div>
       <a href="/app.html" class="plan-cta plan-cta-featured">Get started →</a>
     </div>
+
+    <!-- Team -->
     <div class="plan">
       <div class="plan-badge">Team</div>
-      <div class="plan-name">Business</div>
+      <div class="plan-name" style="font-size:22px;">Team</div>
       <div class="plan-price">$199<span>/month</span></div>
       <div class="plan-desc">For sales teams and consulting firms</div>
       <div class="plan-divider"></div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Unlimited briefs</div>
       <div class="plan-feature"><span class="plan-check">✓</span> 5 seats included</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Team dashboard</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Outlook integration</div>
-      <div class="plan-feature"><span class="plan-check">✓</span> Dedicated support</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Everything in Pro</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Brief sharing</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Team brief history</div>
+      <div class="plan-feature"><span class="plan-check">✓</span> Priority support</div>
       <a href="/app.html" class="plan-cta plan-cta-default">Get started →</a>
     </div>
+
   </div>
 </section>
 
