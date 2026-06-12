@@ -55,7 +55,7 @@ exports.handler = async function(event) {
     return {
       statusCode: 302,
       headers: {
-        'Location': '/?gmail_connected=true&token=' + tokenData,
+        'Location': '/app.html?gmail_connected=true&token=' + tokenData,
         'Cache-Control': 'no-cache'
       },
       body: ''
@@ -64,7 +64,7 @@ exports.handler = async function(event) {
   } catch(err) {
     return {
       statusCode: 302,
-      headers: { 'Location': '/?gmail_error=' + encodeURIComponent(err.message) },
+      headers: { 'Location': '/app.html?gmail_error=' + encodeURIComponent(err.message) },
       body: ''
     };
   }
