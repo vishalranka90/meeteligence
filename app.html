@@ -1942,9 +1942,27 @@ function initGmail() {
     try {
       gmailToken = JSON.parse(decodeURIComponent(token));
       sessionStorage.setItem('_gmail', JSON.stringify(gmailToken));
-      updateGmailUI(true);
+
+      // Store access code if passed from callback (gate login flow)
+      const acParam = params.get('ac');
+      if (acParam) localStorage.setItem('_ac', decodeURIComponent(acParam));
+
+      // Store identity for display
+      if (gmailToken.email) {
+        localStorage.setItem('_googleEmail', gmailToken.email);
+        localStorage.setItem('_googleLoggedIn', '1');
+      }
+
       // Clean URL
       window.history.replaceState({}, '', window.location.pathname);
+
+      // If _ac is now set, go straight to app with Gmail connected
+      if (localStorage.getItem('_ac')) {
+        showApp();
+        setTimeout(() => { updateGmailUI(true); loadCalendar(); }, 400);
+      } else {
+        updateGmailUI(true);
+      }
     } catch(e) {
       console.error('Gmail token parse error:', e);
     }
