@@ -856,13 +856,12 @@ function initGoogleGate() {
       const tokenData = JSON.parse(decodeURIComponent(tokenRaw));
       const email = tokenData.email || '';
 
-      // Store Gmail token in session (initGmail will pick this up)
+      // Store token in session AND set global gmailToken directly
       sessionStorage.setItem('_gmail', JSON.stringify(tokenData));
+      gmailToken = tokenData;
 
-      // Store identity — treat Google email like _sbUser for plan/history
+      // Store identity
       if (email) {
-        // Try to sign into Supabase silently using stored session
-        // (won't always work without full OAuth, but harmless)
         localStorage.setItem('_googleEmail', email);
         localStorage.setItem('_googleLoggedIn', '1');
         window._googleGateUser = { email };
@@ -881,8 +880,12 @@ function initGoogleGate() {
       const ac = localStorage.getItem('_ac');
       if (ac) {
         showApp();
+        // Explicitly wire up Gmail UI and load calendar now that token is set
+        setTimeout(() => {
+          updateGmailUI(true);
+          loadCalendar();
+        }, 500);
       } else {
-        // Prompt for access code
         const errEl = document.getElementById('apiError');
         if (errEl) {
           errEl.style.color = '#80b0ff';
@@ -900,20 +903,34 @@ function initGoogleGate() {
     return;
   }
 
-  // Check persisted Google gate login
+  // Check persisted Google gate login (sessionStorage survives page refresh but not new tab)
   const googleLoggedIn = localStorage.getItem('_googleLoggedIn');
   const googleEmail = localStorage.getItem('_googleEmail');
   const savedGmail = sessionStorage.getItem('_gmail');
 
-  if (googleLoggedIn && googleEmail) {
-    window._googleGateUser = { email: googleEmail };
-    const emailEl = document.getElementById('googleUserEmail');
-    if (emailEl) emailEl.textContent = googleEmail;
-    const googleStatus = document.getElementById('googleSignedInStatus');
-    if (googleStatus) googleStatus.style.display = 'flex';
+  if (googleLoggedIn && googleEmail && savedGmail) {
+    try {
+      const tokenData = JSON.parse(savedGmail);
+      gmailToken = tokenData;
+      window._googleGateUser = { email: googleEmail };
+      const emailEl = document.getElementById('googleUserEmail');
+      if (emailEl) emailEl.textContent = googleEmail;
+      const googleStatus = document.getElementById('googleSignedInStatus');
+      if (googleStatus) googleStatus.style.display = 'flex';
 
-    const ac = localStorage.getItem('_ac');
-    if (ac && savedGmail) showApp();
+      const ac = localStorage.getItem('_ac');
+      if (ac) {
+        showApp();
+        setTimeout(() => {
+          updateGmailUI(true);
+          loadCalendar();
+        }, 500);
+      }
+    } catch(e) {
+      // Stale/corrupt session — clear and let user re-auth
+      localStorage.removeItem('_googleLoggedIn');
+      localStorage.removeItem('_googleEmail');
+    }
   }
 }
 
@@ -2149,8 +2166,7 @@ function showApp() {
   }
   // Load calendar after Gmail token is restored from session
   setTimeout(() => { if (gmailToken && gmailToken.access_token) loadCalendar(); }, 1000);
-  // Re-run Gmail + Outlook init in case tokens arrived via gate OAuth
-  setTimeout(() => initGmail(), 100);
+  // Re-run Outlook init in case token arrived via gate OAuth
   setTimeout(() => initOutlook(), 200);
 
   // Capabilities deck: restore status, show onboarding if first time
