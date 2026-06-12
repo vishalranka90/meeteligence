@@ -1959,7 +1959,14 @@ function initGmail() {
       // If _ac is now set, go straight to app with Gmail connected
       if (localStorage.getItem('_ac')) {
         showApp();
-        setTimeout(() => { updateGmailUI(true); loadCalendar(); }, 400);
+        setTimeout(() => {
+          // Re-set gmailToken in case showApp init() cleared it
+          if (!gmailToken || !gmailToken.access_token) {
+            try { gmailToken = JSON.parse(sessionStorage.getItem('_gmail') || '{}'); } catch(e) {}
+          }
+          updateGmailUI(true);
+          if (gmailToken && gmailToken.access_token) loadCalendar();
+        }, 800);
       } else {
         updateGmailUI(true);
       }
@@ -1998,6 +2005,7 @@ function disconnectGmail() {
 function updateGmailUI(connected) {
   const btn = document.getElementById('gmailConnectBtn');
   const status = document.getElementById('gmailStatus');
+  const outlookPanel = document.getElementById('outlookPanel');
   if (connected && gmailToken) {
     btn.textContent = '✅ Gmail Connected';
     btn.onclick = disconnectGmail;
@@ -2005,11 +2013,17 @@ function updateGmailUI(connected) {
     btn.style.border = '1px solid #86efac';
     btn.style.color = '#0ead69';
     btn.title = 'Click to disconnect';
-    status.textContent = '✅ Connected as ' + (gmailToken.email || localStorage.getItem('_googleEmail') || 'your account');
+    const displayEmail = gmailToken.email 
+      || localStorage.getItem('_googleEmail')
+      || (() => { try { return JSON.parse(sessionStorage.getItem('_gmail') || '{}').email || ''; } catch(e) { return ''; } })()
+      || 'your account';
+    status.textContent = '✅ Connected as ' + displayEmail;
     status.style.color = '#0ead69';
     status.style.display = 'block';
     document.getElementById('loadCalBtn').style.display = 'block';
     setTimeout(() => { loadCalendar(); document.getElementById('loadCalBtn').style.display = 'none'; }, 300);
+    // Hide Outlook panel — only one provider at a time
+    if (outlookPanel) outlookPanel.style.display = 'none';
   } else {
     btn.textContent = '📧 Connect Gmail';
     btn.onclick = connectGmail;
@@ -2019,6 +2033,8 @@ function updateGmailUI(connected) {
     status.textContent = '';
     status.style.display = 'none';
     document.getElementById('loadCalBtn').style.display = 'none';
+    // Show Outlook panel again if Gmail disconnected (and Outlook not connected)
+    if (outlookPanel && !outlookToken) outlookPanel.style.display = 'block';
   }
   updateSidebarSources();
 }
@@ -4021,6 +4037,7 @@ function updateOutlookUI(connected) {
   const btn = document.getElementById('outlookConnectBtn');
   const status = document.getElementById('outlookStatus');
   const calBtn = document.getElementById('loadOutlookCalBtn');
+  const gmailPanel = document.getElementById('gmailPanel');
   if (connected && outlookToken) {
     btn.textContent = '✅ Outlook Connected';
     btn.onclick = disconnectOutlook;
@@ -4030,6 +4047,8 @@ function updateOutlookUI(connected) {
     status.style.display = 'block';
     calBtn.style.display = 'block';
     setTimeout(() => { loadOutlookCalendar(); calBtn.style.display = 'none'; }, 300);
+    // Hide Gmail panel — only one provider at a time
+    if (gmailPanel) gmailPanel.style.display = 'none';
   } else {
     btn.textContent = '📨 Connect Outlook';
     btn.onclick = connectOutlook;
@@ -4037,6 +4056,8 @@ function updateOutlookUI(connected) {
     status.textContent = '';
     status.style.display = 'none';
     calBtn.style.display = 'none';
+    // Show Gmail panel again if Outlook disconnected (and Gmail not connected)
+    if (gmailPanel && !gmailToken) gmailPanel.style.display = 'block';
   }
   updateSidebarSources();
 }
