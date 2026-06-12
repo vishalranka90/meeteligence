@@ -1987,11 +1987,11 @@ function updateGmailUI(connected) {
     btn.style.border = '1px solid #86efac';
     btn.style.color = '#0ead69';
     btn.title = 'Click to disconnect';
-    status.textContent = '✅ Connected as ' + (gmailToken.email || 'your account');
+    status.textContent = '✅ Connected as ' + (gmailToken.email || localStorage.getItem('_googleEmail') || 'your account');
     status.style.color = '#0ead69';
     status.style.display = 'block';
     document.getElementById('loadCalBtn').style.display = 'block';
-    setTimeout(() => loadCalendar(), 300);
+    setTimeout(() => { loadCalendar(); document.getElementById('loadCalBtn').style.display = 'none'; }, 300);
   } else {
     btn.textContent = '📧 Connect Gmail';
     btn.onclick = connectGmail;
@@ -4011,7 +4011,7 @@ function updateOutlookUI(connected) {
     status.style.color = '#0ead69';
     status.style.display = 'block';
     calBtn.style.display = 'block';
-    setTimeout(() => loadOutlookCalendar(), 300);
+    setTimeout(() => { loadOutlookCalendar(); calBtn.style.display = 'none'; }, 300);
   } else {
     btn.textContent = '📨 Connect Outlook';
     btn.onclick = connectOutlook;
