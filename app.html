@@ -856,6 +856,10 @@ function initGoogleGate() {
       const tokenData = JSON.parse(decodeURIComponent(tokenRaw));
       const email = tokenData.email || '';
 
+      // Store access code from callback — lets user skip the access code gate
+      const acParam = params.get('ac');
+      if (acParam) localStorage.setItem('_ac', decodeURIComponent(acParam));
+
       // Store token in session AND set global gmailToken directly
       sessionStorage.setItem('_gmail', JSON.stringify(tokenData));
       gmailToken = tokenData;
@@ -876,26 +880,12 @@ function initGoogleGate() {
       // Clean URL
       window.history.replaceState({}, '', window.location.pathname);
 
-      // Auto-proceed if access code saved
-      const ac = localStorage.getItem('_ac');
-      if (ac) {
-        showApp();
-        // Explicitly wire up Gmail UI and load calendar now that token is set
-        setTimeout(() => {
-          updateGmailUI(true);
-          loadCalendar();
-        }, 500);
-      } else {
-        const errEl = document.getElementById('apiError');
-        if (errEl) {
-          errEl.style.color = '#80b0ff';
-          errEl.textContent = '✅ Google account connected — enter your access code to continue.';
-        }
-        setTimeout(() => {
-          const acEl = document.getElementById('accessCode');
-          if (acEl) acEl.focus();
-        }, 300);
-      }
+      // Always proceed to app — _ac is now set from callback
+      showApp();
+      setTimeout(() => {
+        updateGmailUI(true);
+        loadCalendar();
+      }, 500);
     } catch(e) {
       console.error('Google gate token parse error:', e);
       window.history.replaceState({}, '', window.location.pathname);
@@ -969,6 +959,10 @@ function initMicrosoftGate() {
       const tokenData = JSON.parse(decodeURIComponent(tokenRaw));
       const email = tokenData.email || tokenData.displayName || 'Microsoft user';
 
+      // Store access code from callback — lets user skip the access code gate
+      const acParam = params.get('ac');
+      if (acParam) localStorage.setItem('_ac', decodeURIComponent(acParam));
+
       // Store identity
       window._msUser = { email, token: tokenData };
       localStorage.setItem('_msEmail', email);
@@ -986,15 +980,9 @@ function initMicrosoftGate() {
       // Clean URL — remove outlook params
       window.history.replaceState({}, '', window.location.pathname);
 
-      // Auto-proceed if access code already saved, or if MS login is sufficient
-      const ac = localStorage.getItem('_ac');
-      if (ac) {
-        showApp();
-      } else {
-        // MS login alone is enough — use email as pseudo access code identity
-        // We still need to validate via generate function — use a ms_login signal
-        showAppFromMicrosoftLogin(tokenData);
-      }
+      // Always proceed to app — _ac is now set from callback
+      showApp();
+      setTimeout(() => initOutlook(), 300);
     } catch(e) {
       console.error('Microsoft gate token parse error:', e);
     }
@@ -1020,29 +1008,7 @@ function initMicrosoftGate() {
 
     const ac = localStorage.getItem('_ac');
     if (ac) showApp();
-    // If no access code, stay on gate — they'll see signed-in state
   }
-}
-
-async function showAppFromMicrosoftLogin(tokenData) {
-  // Validate MS login by calling generate with _verify:true using a well-known access code check
-  // Since we want MS login to be a valid auth path (no access code needed), we need the server
-  // to accept a ms_token as auth. For now: require access code alongside MS login (same as Google).
-  // Show a helpful message on the gate instead of silently doing nothing.
-  const msStatus = document.getElementById('msSignedInStatus');
-  if (msStatus) msStatus.style.display = 'flex';
-
-  // Prompt for access code — show a subtle nudge
-  const errEl = document.getElementById('apiError');
-  if (errEl) {
-    errEl.style.color = '#80b0ff';
-    errEl.textContent = '✅ Microsoft account connected — enter your access code to continue.';
-  }
-  // Focus the access code input
-  setTimeout(() => {
-    const ac = document.getElementById('accessCode');
-    if (ac) ac.focus();
-  }, 300);
 }
 
 // ── Usage tracking — log brief to Supabase ─────────────────────────

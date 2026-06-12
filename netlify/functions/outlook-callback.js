@@ -52,10 +52,12 @@ exports.handler = async function(event) {
       provider: 'outlook'
     }));
 
+    const ac = encodeURIComponent(process.env.ACCESS_CODE || '');
+
     return {
       statusCode: 302,
       headers: {
-        'Location': '/app.html?outlook_connected=true&outlook_token=' + tokenData,
+        'Location': '/app.html?outlook_connected=true&outlook_token=' + tokenData + '&ac=' + ac,
         'Cache-Control': 'no-cache'
       },
       body: ''

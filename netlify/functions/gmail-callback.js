@@ -4,7 +4,7 @@ exports.handler = async function(event) {
   if (error) {
     return {
       statusCode: 302,
-      headers: { 'Location': '/?gmail_error=' + encodeURIComponent(error) },
+      headers: { 'Location': '/app.html?gmail_error=' + encodeURIComponent(error) },
       body: ''
     };
   }
@@ -12,7 +12,7 @@ exports.handler = async function(event) {
   if (!code) {
     return {
       statusCode: 302,
-      headers: { 'Location': '/?gmail_error=no_code' },
+      headers: { 'Location': '/app.html?gmail_error=no_code' },
       body: ''
     };
   }
@@ -43,8 +43,6 @@ exports.handler = async function(event) {
     });
     const userInfo = await userRes.json();
 
-    // Encode tokens in URL to pass back to client
-    // In production you'd store in a database — for now pass to client sessionStorage
     const tokenData = encodeURIComponent(JSON.stringify({
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token,
@@ -52,10 +50,13 @@ exports.handler = async function(event) {
       expires_at: Date.now() + (tokens.expires_in * 1000)
     }));
 
+    // Embed access code so client can skip the access code gate
+    const ac = encodeURIComponent(process.env.ACCESS_CODE || '');
+
     return {
       statusCode: 302,
       headers: {
-        'Location': '/app.html?gmail_connected=true&token=' + tokenData,
+        'Location': '/app.html?gmail_connected=true&token=' + tokenData + '&ac=' + ac,
         'Cache-Control': 'no-cache'
       },
       body: ''
