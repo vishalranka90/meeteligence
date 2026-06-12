@@ -88,6 +88,7 @@ exports.handler = async function(event) {
           id: userId,
           email: userEmail || null,
           briefs_used: 1,
+          last_active_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
       }).catch(e => console.log('Profile upsert failed:', e.message));
